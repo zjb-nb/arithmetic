@@ -13,7 +13,18 @@ https://leetcode.cn/problems/merge-two-sorted-lists/description/
 输出：[1,1,2,3,4,4]
 */
 func MergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	panic("")
+	if list1 == nil {
+		return list2
+	}
+	if list2 == nil {
+		return list1
+	}
+	if list1.Val > list2.Val {
+		list2.Next = MergeTwoLists(list1, list2.Next)
+		return list2
+	}
+	list1.Next = MergeTwoLists(list2, list1.Next)
+	return list1
 }
 
 /*

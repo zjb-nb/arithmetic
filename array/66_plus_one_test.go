@@ -11,15 +11,16 @@ review
 https://leetcode.cn/problems/plus-one/
 */
 func PlusOne(digits []int) []int {
-	res := []int{1}
 	for i := len(digits) - 1; i >= 0; i-- {
-		if digits[i] != 9 {
-			digits[i]++
-			return digits
+		if digits[i] == 9 {
+			digits[i] = 0
+			continue
 		}
-		digits[i] = 0
+		digits[i]++
+		return digits
 	}
-	res = append(res, digits...)
+	res := make([]int, len(digits)+1)
+	res[0] = 1
 	return res
 }
 

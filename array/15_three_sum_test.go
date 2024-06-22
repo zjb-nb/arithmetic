@@ -7,34 +7,42 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// review
+// https://leetcode.cn/problems/3sum/
+// 三叔之和=0，返回结果集，去重
 func threeSum1(nums []int) [][]int {
 	res := [][]int{}
+	l := len(nums)
 	sort.Ints(nums)
-	for cur := 0; cur < len(nums)-2; cur++ {
-		if nums[cur] > 0 {
+	for cur, v := range nums {
+		if v > 0 {
 			return res
 		}
-		if cur > 0 && nums[cur] == nums[cur-1] {
+		if cur > 1 && nums[cur] == nums[cur-1] {
 			continue
 		}
-
-		l, r := cur+1, len(nums)-1
-		for l < r {
-			if nums[cur]+nums[l]+nums[r] == 0 {
-				res = append(res, []int{nums[cur], nums[l], nums[r]})
-				for l < r && nums[l+1] == nums[l] {
-					l++
+		left := cur + 1
+		right := l - 1
+		for left < right {
+			if v+nums[left]+nums[right] == 0 {
+				res = append(res, []int{v, nums[left], nums[right]})
+				for left+1 < l && nums[left] == nums[left+1] {
+					left++
 				}
-				l++
-				for l < r && nums[r-1] == nums[r] {
-					r--
+				left++
+				for right-1 > left && nums[right] == nums[right-1] {
+					right--
 				}
-				r--
-			} else if nums[cur]+nums[l]+nums[r] < 0 {
-				l++
+				right--
+			} else if v+nums[left]+nums[right] > 0 {
+				for right-1 > left && nums[right] == nums[right-1] {
+					right--
+				}
+				right--
 			} else {
-				r--
+				for left+1 < l && nums[left] == nums[left+1] {
+					left++
+				}
+				left++
 			}
 		}
 	}

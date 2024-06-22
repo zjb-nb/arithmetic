@@ -15,13 +15,10 @@ refresher
 [0, 1, 0, 3, 12]
 */
 func MoveZeroes(nums []int) {
-	//TODO 2种办法
-	snow_ball := 0
-	for i := 0; i < len(nums); i++ {
-		if nums[i] == 0 {
-			snow_ball++
-		} else if snow_ball > 0 {
-			nums[i], nums[i-snow_ball] = 0, nums[i]
+	for i, j := 0, 0; j < len(nums); j++ {
+		if nums[j] != 0 {
+			nums[i], nums[j] = nums[j], nums[i]
+			i++
 		}
 	}
 }

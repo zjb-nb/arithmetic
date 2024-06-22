@@ -10,14 +10,17 @@ import (
 // review [1,8,6,2,5,4,8,3,7]
 // s= h * w = min(height[i],height[j])*(height[j]-height[i])
 func MaxArea(height []int) int {
-	s, l, r := 0, 0, len(height)-1
-	for l < r {
-		if height[r] < height[l] {
-			s = Max(s, height[r]*(r-l))
-			r--
+	if len(height) < 2 {
+		return 0
+	}
+	s, left, right := 0, 0, len(height)-1
+	for left < right {
+		if height[right] > height[left] {
+			s = Max(s, (right-left)*height[left])
+			left++
 		} else {
-			s = Max(s, height[l]*(r-l))
-			l++
+			s = Max(s, (right-left)*height[right])
+			right--
 		}
 	}
 	return s

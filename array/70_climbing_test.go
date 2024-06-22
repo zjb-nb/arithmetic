@@ -16,9 +16,10 @@ func ClimbStairs(n int) int {
 	if n < 3 {
 		return n
 	}
-	prev, cur := 1, 2
+	prev := 1
+	cur := 2
 	for i := 3; i <= n; i++ {
-		cur, prev = prev+cur, cur
+		cur, prev = cur+prev, cur
 	}
 	return cur
 }

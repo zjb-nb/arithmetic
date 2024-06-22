@@ -14,26 +14,27 @@ func reverseBetween(head *ListNode, left int, right int) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
-	dummyNode := &ListNode{Val: -1}
-	dummyNode.Next = head
-	pre := dummyNode
+	dummy := &ListNode{Val: -1, Next: head}
+	leftNode := dummy
 	for i := 0; i < left-1; i++ {
-		pre = pre.Next
+		if leftNode.Next == nil {
+			return head
+		}
+		leftNode = leftNode.Next
 	}
-	leftNode, rightNode := pre.Next, pre
-	for j := 0; j < right-left+1; j++ {
-		rightNode = rightNode.Next
+	tailNode, headNode := leftNode.Next, leftNode.Next
+	for i := 0; i < right-left; i++ {
+		if tailNode.Next == nil {
+			return head
+		}
+		tailNode = tailNode.Next
 	}
-	curr := rightNode.Next
 
-	pre.Next = nil
-	rightNode.Next = nil
-
-	ReverseList(leftNode)
-
-	pre.Next = rightNode
-	leftNode.Next = curr
-	return dummyNode.Next
+	rightNode := tailNode.Next
+	tailNode.Next = nil
+	leftNode.Next = reverseList4(leftNode.Next)
+	headNode.Next = rightNode
+	return dummy.Next
 }
 
 // 头插法思路，只遍历一遍

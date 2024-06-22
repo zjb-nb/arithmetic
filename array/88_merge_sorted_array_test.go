@@ -56,6 +56,7 @@ func merge2(nums1 []int, m int, nums2 []int, _ int) {
 
 /*
 逆向双指针的前提是后面有足够的空空间
+需要注意nums1被提前消耗完的情况，所以for条件必须是另一个
 */
 func merge3(nums1 []int, m int, nums2 []int, n int) {
 	var count, i, j = m + n - 1, m - 1, n - 1
