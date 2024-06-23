@@ -3,6 +3,6 @@ package main
 import "testing"
 
 func TestP(t *testing.T) {
-	tmp := []int{1, 2, 3}
-	t.Log(tmp[0:])
+	var a byte = '1'
+	t.Log(a - 'a')
 }

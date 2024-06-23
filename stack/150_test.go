@@ -13,31 +13,31 @@ import (
 review
 */
 func evalrpn(tokens []string) int {
-	stack := []int{}
+	stack := make([]int, 0, len(tokens))
 	for _, v := range tokens {
-		num, err := strconv.Atoi(v)
+		val, err := strconv.Atoi(v)
 		if err == nil {
-			stack = append(stack, num)
-		} else {
-			num1, num2 := 0, 0
-			if len(stack) > 0 {
-				num1 = stack[len(stack)-1]
-				stack = stack[:len(stack)-1]
-			}
-			if len(stack) > 0 {
-				num2 = stack[len(stack)-1]
-				stack = stack[:len(stack)-1]
-			}
-			switch v {
-			case "+":
-				stack = append(stack, num1+num2)
-			case "-":
-				stack = append(stack, num2-num1)
-			case "*":
-				stack = append(stack, num1*num2)
-			case "/":
-				stack = append(stack, num2/num1)
-			}
+			stack = append(stack, val)
+			continue
+		}
+		argv1, argv2 := 0, 0
+		if len(stack) > 0 {
+			argv1 = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+		}
+		if len(stack) > 0 {
+			argv2 = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+		}
+		switch v {
+		case "+":
+			stack = append(stack, argv1+argv2)
+		case "-":
+			stack = append(stack, argv2-argv1)
+		case "*":
+			stack = append(stack, argv1*argv2)
+		case "/":
+			stack = append(stack, argv2/argv1)
 		}
 	}
 	return stack[len(stack)-1]

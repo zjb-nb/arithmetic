@@ -7,7 +7,7 @@ import (
 )
 
 /*
-review
+review https://leetcode.cn/problems/count-number-of-nice-subarrays/description/
 给你一个整数数组 nums 和一个整数 k。如果某个连续子数组中恰好有 k 个奇数数字，
 我们就认为这个子数组是「优美子数组」。
 请返回这个数组中 「优美子数组」 的数目。
@@ -22,7 +22,60 @@ review
 */
 func NumberOfSubarrays(nums []int, k int) int {
 	//TODO
-	return 0
+	/*
+		滑动窗口
+		先确定滑动窗口的初始范围 right++ 直到count=k
+		left=right=count =0
+		for right++ {
+		  if  xxxx {count++}
+			right++
+			if count==k {
+			   tmp = right
+			   确定窗口右边的偶数数量
+				 for r%2==0 && r<l {
+				   right ++
+				 }
+				走到这里说明1.来到边界了 2.来到奇数边界了 此时nums[r]%2=0
+				那么右边界一共有(right-tmp+1)种
+				然后计算左边界的种类
+				for left%2==0 && left<=l-k {
+				   leftCnt++
+					 left++
+				}
+				此时res += leftCnt+1 * rightCnt+1
+
+			}
+		}
+
+	*/
+	left, right, res, count, l := 0, 0, 0, 0, len(nums)
+	if l < k {
+		return res
+	}
+	for right < len(nums) {
+		if nums[right]%2 == 1 {
+			count++
+		}
+		right++
+		if count == k {
+			rightEventCnt := 0
+			for right < l && nums[right]%2 == 0 {
+				right++
+				rightEventCnt++
+			}
+			//此时right指向数组右边界，或者右边第一个奇数
+			leftCnt := 0
+			for nums[left]%2 == 0 {
+				left++
+				leftCnt++
+			}
+			//此时left指向右边第一个奇数
+			res += (leftCnt + 1) * (rightEventCnt + 1)
+			left++
+			count--
+		}
+	}
+	return res
 }
 
 /*
@@ -84,7 +137,7 @@ s[5]-s[1]=3
 
 这不就是求两数之和的公式吗，只不过求解换成了记录的哈希表存在几个 s[j]-k的值
 
-对于 s[5] （以nums[4]为边界） 存在1个 边界s[1]满足 3=3-k =>[1,5]	---[1,0,1]
+对于 s[5] （以nums[4]为边界） 存在1个 边界s[1]满足 3=3-k =>[1,5]	---[1,0,1,1]
 对于 s[4] （以nums[3]为边界） 存在1个 边界s[0]满足 3=3-k =>[0,4]	---[1,1,0,1]
 
 问题就变成了如何查找 差的个数 ，用cout保存，如果 count [ s[5]-k ] 命中 把值累加

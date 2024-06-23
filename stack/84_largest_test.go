@@ -8,33 +8,35 @@ import (
 )
 
 /*
-review
+review https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
 求柱状图形成的最大矩形面积
 输入：heights = [2,1,5,6,2,3]
 输出：10
 */
 func LargestRectangleArea(heights []int) int {
-	s := 0
-	//存下表
-	heights = append(heights, -1)
-	stack := []int{}
-	for i := 0; i < len(heights); i++ {
-		for len(stack) > 0 && heights[i] < heights[stack[len(stack)-1]] {
-			right := i - 1
-			left := -1
+	// h * l 求 以该条矩形高能组成的矩形的 最大宽，栈顶元素比当前元素高那么就计算
+	if len(heights) == 0 {
+		return 0
+	}
+	area := 0
+	stack := make([]int, 0, len(heights)+1)
+	heights = append(heights, 0)
+	for k, v := range heights {
+		for len(stack) > 0 && v < heights[stack[len(stack)-1]] {
 			h := heights[stack[len(stack)-1]]
 			stack = stack[:len(stack)-1]
+			left := -1
 			for len(stack) > 0 && h == heights[stack[len(stack)-1]] {
 				stack = stack[:len(stack)-1]
 			}
 			if len(stack) > 0 {
 				left = stack[len(stack)-1]
 			}
-			s = Max(s, h*(right-left))
+			area = Max(area, h*(k-left-1))
 		}
-		stack = append(stack, i)
+		stack = append(stack, k)
 	}
-	return s
+	return area
 }
 
 /*

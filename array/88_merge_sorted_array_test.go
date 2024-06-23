@@ -17,7 +17,17 @@ nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
 *
 */
 func Merge(nums1 []int, m int, nums2 []int, n int) {
-	panic("")
+	count, i, j := m+n-1, m-1, n-1
+	for j >= 0 {
+		if i >= 0 && nums1[i] > nums2[j] {
+			nums1[count] = nums1[i]
+			i--
+		} else {
+			nums1[count] = nums2[j]
+			j--
+		}
+		count--
+	}
 }
 
 /*

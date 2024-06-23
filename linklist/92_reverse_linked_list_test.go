@@ -14,6 +14,7 @@ func reverseBetween(head *ListNode, left int, right int) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
 	}
+	// 记录要反转链表的头尾节点和左右节点
 	dummy := &ListNode{Val: -1, Next: head}
 	leftNode := dummy
 	for i := 0; i < left-1; i++ {
@@ -22,17 +23,16 @@ func reverseBetween(head *ListNode, left int, right int) *ListNode {
 		}
 		leftNode = leftNode.Next
 	}
-	tailNode, headNode := leftNode.Next, leftNode.Next
+	headNode, tailNode := leftNode.Next, leftNode.Next
 	for i := 0; i < right-left; i++ {
 		if tailNode.Next == nil {
 			return head
 		}
 		tailNode = tailNode.Next
 	}
-
 	rightNode := tailNode.Next
 	tailNode.Next = nil
-	leftNode.Next = reverseList4(leftNode.Next)
+	leftNode.Next = reverseList4(headNode)
 	headNode.Next = rightNode
 	return dummy.Next
 }

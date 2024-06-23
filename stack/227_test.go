@@ -8,33 +8,34 @@ import (
 )
 
 func calculateii(s string) int {
-	tokens, ops := []string{}, []string{}
-	val := 0
-	nums_start := false
-	need_zero := true
-	for i := 0; i < len(s); i++ {
-		if s[i] >= '0' && s[i] <= '9' {
-			val = val*10 + int(s[i]) - int('0')
-			nums_start = true
-			continue
-		} else if nums_start {
-			tokens = append(tokens, strconv.Itoa(val))
-			val = 0
-			nums_start = false
-			need_zero = false
-		}
+	tokens, ops := make([]string, 0, len(s)), make([]string, 0, len(s))
+	token := 0
+	need_zero, nums_start := true, false
 
+	for i := 0; i < len(s); i++ {
 		if s[i] == ' ' {
 			continue
 		}
+		if s[i] >= '0' && s[i] <= '9' {
+			nums_start = true
+			val, _ := strconv.Atoi(string(s[i]))
+			token = token*10 + val
+			continue
+		} else if nums_start {
+			tokens = append(tokens, strconv.Itoa(token))
+			nums_start = false
+			need_zero = false
+			token = 0
+		}
 
-		if s[i] == '(' {
+		str := string(s[i])
+		if str == "(" {
+			ops = append(ops, str)
 			need_zero = true
-			ops = append(ops, string(s[i]))
 			continue
 		}
 
-		if s[i] == ')' {
+		if str == ")" {
 			for len(ops) > 0 && ops[len(ops)-1] != "(" {
 				tokens = append(tokens, ops[len(ops)-1])
 				ops = ops[:len(ops)-1]
@@ -43,26 +44,25 @@ func calculateii(s string) int {
 			need_zero = false
 			continue
 		}
+
 		if need_zero {
 			tokens = append(tokens, "0")
 		}
-		for len(ops) > 0 && getValueLevel(ops[len(ops)-1]) >= getValueLevel(string(s[i])) {
+
+		if len(ops) > 0 && getValueLevel(ops[len(ops)-1]) >= getValueLevel(str) {
 			tokens = append(tokens, ops[len(ops)-1])
 			ops = ops[:len(ops)-1]
 		}
-		ops = append(ops, string(s[i]))
+		ops = append(ops, str)
 		need_zero = true
 	}
-
 	if nums_start {
-		tokens = append(tokens, strconv.Itoa(val))
+		tokens = append(tokens, strconv.Itoa(token))
 	}
-
 	for len(ops) > 0 {
 		tokens = append(tokens, ops[len(ops)-1])
 		ops = ops[:len(ops)-1]
 	}
-
 	return eval(tokens)
 }
 

@@ -15,20 +15,19 @@ https://leetcode.cn/problems/trapping-rain-water/description/
 */
 func Trap(height []int) int {
 	area := 0
-	//TODO
-	stack := []int{}
-	for i := 0; i < len(height); i++ {
-		for len(stack) > 0 && height[i] > height[stack[len(stack)-1]] {
-			right := i
-			top := stack[len(stack)-1]
+	//找左边界和右边界
+	stack := make([]int, 0, len(height))
+	for k, v := range height {
+		for len(stack) > 0 && v > height[stack[len(stack)-1]] {
+			top := height[stack[len(stack)-1]]
 			stack = stack[:len(stack)-1]
 			if len(stack) == 0 {
 				break
 			}
 			left := stack[len(stack)-1]
-			area += (Min(height[left], height[right]) - height[top]) * (right - left - 1)
+			area += (Min(height[left], v) - top) * (k - left - 1)
 		}
-		stack = append(stack, i)
+		stack = append(stack, k)
 	}
 	return area
 }

@@ -9,7 +9,7 @@ import (
 // https://leetcode.cn/problems/4sum-ii/description/
 // 4元组之和为0出现的次数
 func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
-	ans := 0
+	count := 0
 	h := make(map[int]int)
 	for _, v1 := range nums1 {
 		for _, v2 := range nums2 {
@@ -18,10 +18,10 @@ func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 	}
 	for _, v1 := range nums3 {
 		for _, v2 := range nums4 {
-			ans += h[-v1-v2]
+			count += h[-v1-v2]
 		}
 	}
-	return ans
+	return count
 }
 func Test_fourV1_sum(t *testing.T) {
 	tests := []struct {

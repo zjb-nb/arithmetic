@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// 用递归
+// 用递归 1221
 func isPalindrome(head *ListNode) bool {
 	cur := head
 	var reverse func(c *ListNode) bool

@@ -14,27 +14,31 @@ https://leetcode.cn/problems/sliding-window-maximum/description/
 输出：[3,3,5,5,6,7]
 */
 func MaxSlidingWindow(nums []int, k int) []int {
-	if len(nums) < k {
+	if len(nums) < k || k == 1 {
 		return nums
 	}
-	stack := []int{}
-	for i := 0; i < k; i++ {
-		for len(stack) > 0 && nums[i] > nums[stack[len(stack)-1]] {
-			stack = stack[:len(stack)-1]
-		}
-		stack = append(stack, i)
+	if k <= 0 {
+		return []int{}
 	}
-	res := []int{nums[stack[0]]}
+	var add func(int)
+	que := make([]int, 0, k)
+	res := []int{}
+	add = func(i int) {
+		for len(que) > 0 && nums[i] > nums[que[len(que)-1]] {
+			que = que[:len(que)-1]
+		}
+		que = append(que, i)
+	}
+	for i := 0; i < k; i++ {
+		add(i)
+	}
+	res = append(res, nums[que[0]])
 	for i := k; i < len(nums); i++ {
-		//pop头部
-		if stack[0] <= i-k {
-			stack = stack[1:]
+		if que[0] <= i-k {
+			que = que[1:]
 		}
-		for len(stack) > 0 && nums[i] > nums[stack[len(stack)-1]] {
-			stack = stack[:len(stack)-1]
-		}
-		stack = append(stack, i)
-		res = append(res, nums[stack[0]])
+		add(i)
+		res = append(res, nums[que[0]])
 	}
 	return res
 }

@@ -9,21 +9,7 @@ import (
 
 // https://leetcode.cn/problems/4sum/description/
 func fourSum(nums []int, target int) [][]int {
-	res := [][]int{}
-	sort.Ints(nums)
-	l := len(nums)
-	for k, v := range nums {
-		if v > target || k >= l-3 {
-			return res
-		}
-		if k > 1 && nums[k] == nums[k-1] {
-			continue
-		}
-
-		res = append(res, threeSumV1(nums[k+1:], target, v)...)
-
-	}
-	return res
+	panic("")
 }
 
 func threeSumV1(nums []int, target int, val int) [][]int {

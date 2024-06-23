@@ -15,16 +15,17 @@ https://leetcode.cn/problems/valid-parentheses/
 输出：true
 */
 func IsValid(s string) bool {
-	if len(s)%2 > 0 {
+	//出栈的条件必须是对应括号
+	if len(s)%2 != 0 {
 		return false
 	}
-	var symbolmap map[byte]byte = map[byte]byte{
-		')': '(', ']': '[', '}': '{',
+	h := map[byte]byte{
+		')': '(', '}': '{', ']': '[',
 	}
-	stack := []byte{}
+	stack := make([]byte, 0, len(s))
 	for i := 0; i < len(s); i++ {
-		if symbolmap[s[i]] > 0 {
-			if len(stack) == 0 || stack[len(stack)-1] != symbolmap[s[i]] {
+		if h[s[i]] > 0 {
+			if len(stack) == 0 || stack[len(stack)-1] != h[s[i]] {
 				return false
 			}
 			stack = stack[:len(stack)-1]

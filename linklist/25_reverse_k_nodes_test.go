@@ -2,29 +2,23 @@ package linklist
 
 import "testing"
 
-//https://leetcode.cn/problems/reverse-nodes-in-k-group/
+//https://leetcode.cn/problems/reverse-nodes-in-k-group/ 12345 3 32145
 func ReverseKGroup(head *ListNode, k int) *ListNode {
-	prev := &ListNode{}
-	res := prev
-	for head != nil {
-		i := 0
-		start := head
-		for i < k-1 && head != nil {
-			head = head.Next
-			if head == nil {
-				prev.Next = start
-				return res.Next
-			}
-			i++
-		}
-		next := head.Next
-		head.Next = nil
-		prev.Next = swap(start)
-
-		prev = start
-		head = next
+	if head == nil || head.Next == nil {
+		return head
 	}
-	return res.Next
+	cur, tail := head, head
+	for i := 0; i < k-1; i++ {
+		if tail.Next == nil {
+			return head
+		}
+		tail = tail.Next
+	}
+	next := tail.Next
+	tail.Next = nil
+	newNode := reverseList4(cur)
+	cur.Next = reverseKGroup(next, k)
+	return newNode
 }
 
 func reverseKGroup(head *ListNode, k int) *ListNode {

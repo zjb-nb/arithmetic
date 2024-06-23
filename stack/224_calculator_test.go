@@ -8,14 +8,72 @@ import (
 )
 
 /*
-review
+review https://leetcode.cn/problems/basic-calculator/
 基本计算器 根据字符串计算值,这里和227题加减乘除放一起
 输入：s = "(1+(4+5+2)-3)+(6+8)"
 输出：23
 */
 func Calculate(s string) int {
-	//TODO
-	return 0
+	// 难点是处理 括号和 负数 负数可以看成(-a)
+	/*
+						2-1+2 [2,1,-,2+]  数字在入栈前检查 符号栈有无有就直接添
+				    1+(1+1) [1,1,1,+,+]  遇到左括号入栈s2[+,(,+]，右括号出栈直到左括号 s1[1,1,1,+]  s2
+						(1+(4+5+2)-3)+(6+8)  [01045+2++3-068++] [145+2++3-68+]
+		         -1+(-1) [1-01-+]
+	*/
+	s1, s2 := make([]string, 0, len(s)), make([]string, 0, len(s))
+	var need_zero bool = true
+	for _, v := range s {
+		if v == ' ' {
+			continue
+		}
+		_, err := strconv.Atoi(string(v))
+		if err == nil {
+			s1 = append(s1, string(v))
+			need_zero = false
+			continue
+		}
+		val := string(v)
+		if val == "(" {
+			need_zero = true
+			s2 = append(s2, string(v))
+			continue
+		}
+		if val == ")" {
+			for s2[len(s2)-1] != "(" {
+				s1 = append(s1, s2[len(s2)-1])
+				s2 = s2[:len(s2)-1]
+			}
+			s2 = s2[:len(s2)-1]
+			continue
+		}
+		if need_zero {
+			s1 = append(s1, "0")
+			need_zero = false
+		}
+		if len(s2) > 0 && s2[len(s2)-1] != "(" && Level(val) <= Level(s2[len(s2)-1]) {
+			s1 = append(s1, s2[len(s2)-1])
+			s2 = s2[:len(s2)-1]
+		}
+		need_zero = true
+		s2 = append(s2, string(v))
+	}
+	for len(s2) > 0 {
+		s1 = append(s1, s2[len(s2)-1])
+		s2 = s2[:len(s2)-1]
+	}
+	return eval(s1)
+}
+
+func Level(s string) int {
+	switch s {
+	case "*", "/":
+		return 2
+	case "+", "-":
+		return 1
+	default:
+		return 0
+	}
 }
 
 // [2,1,+] = 3
@@ -117,6 +175,7 @@ func TestC(t *testing.T) {
 		data    string
 		wantRes int
 	}{
+
 		{
 			name:    "1",
 			data:    "1 + 1",
@@ -137,6 +196,7 @@ func TestC(t *testing.T) {
 			data:    "-1+2",
 			wantRes: 1,
 		},
+
 		{
 			name:    "5",
 			data:    "(-1)+(-1)",
@@ -146,6 +206,16 @@ func TestC(t *testing.T) {
 			name:    "6",
 			data:    "3+2*2",
 			wantRes: 7,
+		},
+		{
+			name:    "7",
+			data:    "3+2*2+1",
+			wantRes: 8,
+		},
+		{
+			name:    "8",
+			data:    "3*(1+2*2+1)+(1+2*2+1)",
+			wantRes: 24,
 		},
 	}
 	for _, tt := range tests {

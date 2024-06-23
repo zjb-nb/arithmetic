@@ -13,23 +13,23 @@ nums = [1,2,3,4,5,6,7], k = 3
 [5,6,7,1,2,3,4]
 */
 func Rotate(nums []int, k int) {
-	l, cnt := len(nums), 0
+	count, l := 0, len(nums)
 	if l == 0 {
 		return
 	}
-	k = k % l
-	for i := 0; i < l; i++ {
+	k = (k % l)
+	for i, v := range nums {
 		next := i
-		tmp := nums[i]
+		tmp := v
 		for {
 			next = (next + k) % l
 			tmp, nums[next] = nums[next], tmp
-			cnt++
+			count++
 			if next == i {
 				break
 			}
 		}
-		if cnt == l {
+		if count == l {
 			return
 		}
 	}
