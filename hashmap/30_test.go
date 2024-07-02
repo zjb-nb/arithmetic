@@ -15,7 +15,48 @@ import (
 输出顺序无关紧要。返回 [9,0] 也是可以的。
 */
 func FindSubstring(s string, words []string) []int {
-	return []int{}
+	/*
+			hmap比较
+		1.hmap记录各个单词出现的次数
+		2. for循环s[0,len(s)-m*n]，整理出各自字串的hmap并比较
+	*/
+	res := make([]int, 0, 2)
+	m := len(words)
+	if m == 0 {
+		return res
+	}
+	n := len(words[0])
+	l := len(s)
+	if l < m*n {
+		return res
+	}
+	hmap := make(map[string]int)
+	for _, v := range words {
+		hmap[v]++
+	}
+	for i := 0; i+m*n <= l; i++ {
+		if hmap[string(s[i:i+n])] == 0 {
+			continue
+		}
+		tmp := make(map[string]int)
+		flag := true
+		j := i
+		for j < i+m*n {
+			tmp[string(s[j:j+n])]++
+			j += n
+		}
+		for k, v := range tmp {
+			if hmap[k] != v {
+				flag = false
+				break
+			}
+		}
+		if !flag {
+			continue
+		}
+		res = append(res, i)
+	}
+	return res
 }
 
 /*

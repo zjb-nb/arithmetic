@@ -7,6 +7,7 @@ import (
 )
 
 /*
+2种方法
 review https://leetcode.cn/problems/count-number-of-nice-subarrays/description/
 给你一个整数数组 nums 和一个整数 k。如果某个连续子数组中恰好有 k 个奇数数字，
 我们就认为这个子数组是「优美子数组」。
@@ -23,57 +24,34 @@ review https://leetcode.cn/problems/count-number-of-nice-subarrays/description/
 func NumberOfSubarrays(nums []int, k int) int {
 	//TODO
 	/*
-		滑动窗口
-		先确定滑动窗口的初始范围 right++ 直到count=k
-		left=right=count =0
-		for right++ {
-		  if  xxxx {count++}
-			right++
-			if count==k {
-			   tmp = right
-			   确定窗口右边的偶数数量
-				 for r%2==0 && r<l {
-				   right ++
-				 }
-				走到这里说明1.来到边界了 2.来到奇数边界了 此时nums[r]%2=0
-				那么右边界一共有(right-tmp+1)种
-				然后计算左边界的种类
-				for left%2==0 && left<=l-k {
-				   leftCnt++
-					 left++
+			1.全部转为0、1 求k个奇数就转为范围和s[i,j]为k
+			2. s[j]=s[j-1]+nums[j] 因此为防止越界s[0]=0 s[0]表示以nums[0]为边界(不包括)的范围和
+		  3. s[j]-s[i] = k   ==> s[i]= s[j]-k 即轮询s到s[j]时，是否存在s[i]另s[j]-k=s[i]
+			有几个s[i]就有几个子数组（以nums[j]为边界），这不就是两数之和(s[j]和-k)的问题？
+			我们用频次数组cnt保存s[i]   如果s[j]-v>=0(因为s[i]>=0) 时，如果 cnt[ s[j]-v ] 存在就res+=xxxx
+			s[0]=0
+			for k,v := range nums {
+			  s[k+1]=xxxx
+			}
+		  cnt  map[][]
+			for _,v:= range s {
+			  if v-k>=0 {
+				  res += cnt[v-k]
 				}
-				此时res += leftCnt+1 * rightCnt+1
-
+			  cnt[v]++
 			}
-		}
-
 	*/
-	left, right, res, count, l := 0, 0, 0, 0, len(nums)
-	if l < k {
-		return res
+	res := 0
+	s := make([]int, len(nums)+1)
+	for i, v := range nums {
+		s[i+1] = s[i] + v%2
 	}
-	for right < len(nums) {
-		if nums[right]%2 == 1 {
-			count++
+	cnt := make(map[int]int)
+	for _, v := range s {
+		if v-k >= 0 {
+			res += cnt[v-k]
 		}
-		right++
-		if count == k {
-			rightEventCnt := 0
-			for right < l && nums[right]%2 == 0 {
-				right++
-				rightEventCnt++
-			}
-			//此时right指向数组右边界，或者右边第一个奇数
-			leftCnt := 0
-			for nums[left]%2 == 0 {
-				left++
-				leftCnt++
-			}
-			//此时left指向右边第一个奇数
-			res += (leftCnt + 1) * (rightEventCnt + 1)
-			left++
-			count--
-		}
+		cnt[v]++
 	}
 	return res
 }
@@ -120,28 +98,18 @@ func numberOfSubarrays(nums []int, k int) int {
 
 /*
 2.前缀和算法
-先进行预处理奇数为1，偶数为0
-求有几个子数组有k个奇数问题就变为了 ，有多少个[j,i]区间和为k的问题
-s[j]-s[i] = k
-[1,1,2,1,1] => [1,1,0,1,1]
-s[i]为前i个的和，即
-s[i]=> [1,2,2,3,4]
-因为s[i] = s[i-1]+nums[i],所以需要 len(s) = len(nums)+1,即s[0]初始化为0
-s[i]=>[0,1,2,2,3,4] k=>3
-s[4]-s[0] = 3
-s[5]-s[1]=3
-所以有两个优美数组，再完善一下条件
-有多少个满足 s[j]-s[i] = k =>
 
-	s[i] = s[j] - k
-
-这不就是求两数之和的公式吗，只不过求解换成了记录的哈希表存在几个 s[j]-k的值
-
-对于 s[5] （以nums[4]为边界） 存在1个 边界s[1]满足 3=3-k =>[1,5]	---[1,0,1,1]
-对于 s[4] （以nums[3]为边界） 存在1个 边界s[0]满足 3=3-k =>[0,4]	---[1,1,0,1]
-
-问题就变成了如何查找 差的个数 ，用cout保存，如果 count [ s[5]-k ] 命中 把值累加
-cout[0]=0 表示s[n]和为0的存在个数为0
+	将奇数偶数看成1、0
+	k=3
+	[1,1,2,1,1] = [1,1,0,1,1]
+	有k个奇数问题=》 有多少个区间[i,j]和为3
+	s为以i为边界（不包括i）的和
+	s[j] = s[j-1]+nums[j]
+	s = [0,1,2,4,5,6]
+	区间和 就是 s[j]-s[i] =k (两数之和问题 s[j]/-s[i])
+	s[i] = s[j]-k
+	我们考虑以j为边界的优美子数组时，只要统计有多少个s[i]
+	因此建立频次数组cnt记录s[j]的个数 那么 轮询s时 cnt[s[i]-k]即可得到
 */
 func numberOfSubarrays1(nums []int, k int) int {
 	res := 0

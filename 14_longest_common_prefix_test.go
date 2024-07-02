@@ -8,26 +8,32 @@ import (
 
 // https://leetcode.cn/problems/longest-common-prefix/
 func LongestCommonPrefix(strs []string) string {
-	if len(strs) < 1 {
-		return ""
-	}
-	var lcp func(start, end int) string
-	lcp = func(start, end int) string {
-		if start == end {
-			return strs[start]
+	/*
+		将大问题划分为小问题 分治 左右区间的最小前缀
+
+	*/
+	var dfs func(left, right int) string
+	dfs = func(left, right int) string {
+		if left == right {
+			return strs[left]
 		}
-		mid := (start + end) / 2
-		l, r := lcp(start, mid), lcp(mid+1, end)
-		min_len, i := Min(len(l), len(r)), 0
+		if left > right {
+			return ""
+		}
+		mid := (left + right) / 2
+		l_str := dfs(left, mid)
+		r_str := dfs(mid+1, right)
+		min_len := Min(len(l_str), len(r_str))
+		i := 0
 		for i < min_len {
-			if l[i] != r[i] {
-				return l[:i]
+			if l_str[i] != r_str[i] {
+				break
 			}
 			i++
 		}
-		return l[:min_len]
+		return l_str[:i]
 	}
-	return lcp(0, len(strs)-1)
+	return dfs(0, len(strs)-1)
 }
 
 /*

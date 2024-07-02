@@ -5,45 +5,47 @@ import "testing"
 /*
 review
 https://leetcode.cn/problems/course-schedule-ii/
-dfs遍历
 */
 func FindOrder(numCourses int, prerequisites [][]int) []int {
-	var (
-		res     = []int{}
-		visited = make([]int, numCourses)
-		grap    = make([][]int, numCourses)
-		valid   = true
-		dfs     func(i int)
-	)
+	/*
+		返回学完所有课程的安排顺序，即返回图的遍历过程
+		1.图节点的状态分为未搜索0，搜索中1，已搜索2
+		2.当图搜索过程中发现节点为1则表示有环，不可能学完
+	*/
+	res := make([]int, 0, numCourses)
+	edges := make([][]int, numCourses)
 	for _, v := range prerequisites {
-		grap[v[0]] = append(grap[v[0]], v[1])
+		edges[v[0]] = append(edges[v[0]], v[1])
 	}
+	flag := true
+	tmp := make([]int, numCourses)
+	var dfs func(i int)
+
 	dfs = func(i int) {
-		visited[i] = 1
-		for _, v := range grap[i] {
-			if visited[v] == 0 {
+		tmp[i] = 1
+		for _, v := range edges[i] {
+			if tmp[v] == 0 {
 				dfs(v)
-				if !valid {
+				if !flag {
 					return
 				}
-			} else if visited[v] == 1 {
-				valid = false
+			} else if tmp[v] == 1 {
+				flag = false
 				return
 			}
 		}
-		visited[i] = 2
+		tmp[i] = 2
 		res = append(res, i)
 	}
 
-	for i := 0; i < numCourses && valid; i++ {
-		if visited[i] == 0 {
-			dfs(i)
+	for k, v := range tmp {
+		if v == 0 {
+			dfs(k)
+		}
+		if !flag {
+			return []int{}
 		}
 	}
-	if !valid {
-		return []int{}
-	}
-
 	return res
 }
 
@@ -91,4 +93,5 @@ func findOrder(numCourses int, prerequisites [][]int) []int {
 
 func TestFindCours(t *testing.T) {
 	t.Log(FindOrder(3, [][]int{[]int{1, 0}}))
+	t.Log(FindOrder(4, [][]int{[]int{1, 0}, []int{2, 0}, []int{3, 1}, []int{3, 2}}))
 }

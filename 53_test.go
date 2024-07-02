@@ -17,8 +17,34 @@ import (
 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
 */
 func MaxSubArray(nums []int) int {
-	//TODO
-	return 0
+	//TODO 即求s[i]-s[j]=k的最大值 就是找最大的s[i]和最小的s[j]暴力求解
+	// 找对于每个s[i]最小的s[j]即可
+	/*
+		s[0] = 0
+		for xxxx {
+		  s[xxx]=xxx
+		}
+		prev =0
+		for xxx {
+		  prev=xxx
+		}
+		for xxxx {
+		  res = Max(s[i]=prev[i])
+		}
+	*/
+	res := math.MinInt
+	s := make([]int, len(nums)+1)
+	prev := make([]int, len(s))
+	for i, v := range nums {
+		s[i+1] = s[i] + v
+	}
+	for i := 1; i < len(s); i++ {
+		prev[i] = Min(prev[i-1], s[i])
+	}
+	for i := 1; i < len(s); i++ {
+		res = Max(res, s[i]-prev[i-1])
+	}
+	return res
 }
 
 /*

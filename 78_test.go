@@ -8,15 +8,7 @@ https://leetcode.cn/problems/subsets/
 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 */
 func Subsets(nums []int) [][]int {
-	res := [][]int{[]int{}}
-	for _, v := range nums {
-		new_set := [][]int{}
-		for _, set := range res {
-			new_set = append(new_set, append([]int{v}, set...))
-		}
-		res = append(res, new_set...)
-	}
-	return res
+	panic("")
 }
 
 /*

@@ -27,6 +27,15 @@ type NumMatrix struct {
 	sums [][]int
 }
 
+func New(s [][]int) NumMatrix {
+	panic("")
+}
+
+// [2,1,4,3]
+func (n *NumMatrix) sumRegion(row1 int, col1 int, row2 int, col2 int) int {
+	panic("")
+}
+
 // s[i,j] = s[i-1,j]+s[j-1,i]-s[i-1.j-1]+nums[i,j]
 func MakeNumMatrix(matrix [][]int) NumMatrix {
 	m := len(matrix)
@@ -54,15 +63,15 @@ func (this *NumMatrix) SumRegion(row1 int, col1 int, row2 int, col2 int) int {
 }
 
 func TestMatrix(t *testing.T) {
-	m := MakeNumMatrix([][]int{
+	m := New([][]int{
 		[]int{3, 0, 1, 4, 2},
 		[]int{5, 6, 3, 2, 1},
 		[]int{1, 2, 0, 1, 5},
 		[]int{4, 1, 0, 1, 7},
 		[]int{1, 0, 3, 0, 5},
 	})
-	assert.Equal(t, 8, m.SumRegion(2, 1, 4, 3))
-	assert.Equal(t, 11, m.SumRegion(1, 1, 2, 2))
-	assert.Equal(t, 12, m.SumRegion(1, 2, 2, 4))
+	assert.Equal(t, 8, m.sumRegion(2, 1, 4, 3))
+	assert.Equal(t, 11, m.sumRegion(1, 1, 2, 2))
+	assert.Equal(t, 12, m.sumRegion(1, 2, 2, 4))
 
 }

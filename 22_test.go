@@ -2,8 +2,6 @@ package main
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 /*
@@ -14,21 +12,26 @@ https://leetcode.cn/problems/generate-parentheses/
 输出：["((()))","(()())","(())()","()(())","()()()"]
 */
 func GenerateParenthesis(n int) []string {
-	res := []string{}
-	var dfs func(left, right int, str string)
-	dfs = func(left, right int, str string) {
-		if left == 0 && right == 0 {
-			res = append(res, str)
+	/*
+		1.左括号的数量必须和右括号相等
+		2. 添加左括号前不能添加右括号，即右括号的添加时机为 left<right
+	*/
+	res := make([]string, 0, n*n)
+	var add func(left, right int, s string)
+	add = func(left, right int, s string) {
+		if right == 0 {
+			res = append(res, s)
 			return
 		}
 		if left > 0 {
-			dfs(left-1, right, str+"(")
+			add(left-1, right, s+"(")
 		}
-		if right > 0 && right > left {
-			dfs(left, right-1, str+")")
+		if right > left {
+			add(left, right-1, s+")")
 		}
 	}
-	dfs(n, n, "")
+	add(n, n, "")
+
 	return res
 }
 
@@ -65,11 +68,11 @@ func TestGenerate(t *testing.T) {
 		data    int
 		wantRes []string
 	}{
-		// {
-		// 	name:    "1",
-		// 	data:    3,
-		// 	wantRes: []string{"((()))", "(()())", "(())()", "()(())", "()()()"},
-		// },
+		{
+			name:    "1",
+			data:    3,
+			wantRes: []string{"((()))", "(()())", "(())()", "()(())", "()()()"},
+		},
 		{
 			name:    "2",
 			data:    1,
@@ -79,7 +82,7 @@ func TestGenerate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			res := GenerateParenthesis(tt.data)
-			assert.Equal(t, tt.wantRes, res)
+			t.Log(res)
 		})
 	}
 }

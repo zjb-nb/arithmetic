@@ -15,17 +15,25 @@ https://leetcode.cn/problems/trapping-rain-water/description/
 */
 func Trap(height []int) int {
 	area := 0
+	if len(height) <= 2 {
+		return area
+	}
 	//找左边界和右边界
-	stack := make([]int, 0, len(height))
+	/*
+		1.单调栈，比栈顶元素低就入栈
+		2.高就出栈，此时右边界为当前元素right=cur，出栈的栈顶元素为积水的底部top
+		栈顶元素为左边界 left s = (min(right,left)-top)*(i-j-1)
+		3.重复2 直到遇到高的或栈空
+	*/
+	stack := make([]int, len(height))
 	for k, v := range height {
 		for len(stack) > 0 && v > height[stack[len(stack)-1]] {
 			top := height[stack[len(stack)-1]]
 			stack = stack[:len(stack)-1]
-			if len(stack) == 0 {
-				break
+			if len(stack) > 0 {
+				left := stack[len(stack)-1]
+				area += (Min(height[left], v) - top) * (k - left - 1)
 			}
-			left := stack[len(stack)-1]
-			area += (Min(height[left], v) - top) * (k - left - 1)
 		}
 		stack = append(stack, k)
 	}

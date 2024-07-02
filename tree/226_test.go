@@ -6,6 +6,15 @@ package tree
 输出：[4,7,2,9,6,3,1]
 */
 
+func InvertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+	root.Left = InvertTree(root.Right)
+	root.Right = InvertTree(root.Left)
+	return root
+}
+
 func invertTree(root *TreeNode) *TreeNode {
 	if root == nil {
 		return root

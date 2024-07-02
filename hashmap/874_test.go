@@ -7,7 +7,7 @@ import (
 )
 
 /*
-review
+review https://leetcode.cn/problems/walking-robot-simulation/description/
 模拟机器人走路
 command:
 -1 右转
@@ -18,36 +18,42 @@ obstacles为障碍物地点，如果遇到障碍物会停止前面，然后执�
 返回所到地点的最大欧氏距离 即最远点到原点的距离 X^2
 */
 func RobotSim(commands []int, obstacles [][]int) int {
+	/*
+		定义四个方位作为机器人的面朝方向，原点0,0
+		直走就是op =[ X*dir[x],Y*dir[y]]
+		-2 就是 dir-1
+		-1 就是dir+1
+	*/
+	var direction [][]int = [][]int{
+		[]int{0, 1},  //北
+		[]int{1, 0},  //东
+		[]int{0, -1}, //南
+		[]int{-1, 0}, //西
+	}
 	res := 0
-	directions := [][]int{
-		[]int{0, 1},
-		[]int{1, 0},
-		[]int{0, -1},
-		[]int{-1, 0},
+	dir := 0
+	X, Y := 0, 0
+	hmap := make(map[[2]int]int)
+	for _, ob := range obstacles {
+		hmap[[2]int{ob[0], ob[1]}]++
 	}
-	hmap := map[[2]int]int{}
-	for _, v := range obstacles {
-		hmap[[2]int{v[0], v[1]}]++
-	}
-	dire, curx, cury := 0, 0, 0
-	for _, v := range commands {
-		if v == -1 {
-			dire = (dire + 1) % 4
-			continue
-		}
-		if v == -2 {
-			dire = (dire + 3) % 4
-			continue
-		}
-
-		for i := 0; i < v; i++ {
-			if hmap[[2]int{curx + directions[dire][0], cury + directions[dire][1]}] > 0 {
-				break
+	for _, cmd := range commands {
+		if cmd > 0 {
+			for i := 0; i < cmd; i++ {
+				X = X + direction[dir][0]
+				Y = Y + direction[dir][1]
+				if hmap[[2]int{X, Y}] > 0 {
+					X = X - direction[dir][0]
+					Y = Y - direction[dir][1]
+					break
+				}
 			}
-			curx += directions[dire][0]
-			cury += directions[dire][1]
+			res = Max(res, X*X+Y*Y)
+		} else if cmd == -1 {
+			dir = (dir + 1) % 4
+		} else if cmd == -2 {
+			dir = (dir + 3) % 4 //负数则么办
 		}
-		res = Max(res, curx*curx+cury*cury)
 	}
 	return res
 }
@@ -103,12 +109,6 @@ func TestRobit(t *testing.T) {
 		wantRes  int
 	}{
 		{
-			name:     "1",
-			commands: []int{4, -1, 3},
-			ob:       [][]int{},
-			wantRes:  25,
-		},
-		{
 			name:     "2",
 			commands: []int{4, -1, 4, -2, 4},
 			ob:       [][]int{[]int{2, 4}},
@@ -119,6 +119,12 @@ func TestRobit(t *testing.T) {
 			commands: []int{6, -1, -1, 6},
 			ob:       [][]int{},
 			wantRes:  36,
+		},
+		{
+			name:     "1",
+			commands: []int{4, -1, 3},
+			ob:       [][]int{},
+			wantRes:  25,
 		},
 	}
 	for _, tt := range tests {

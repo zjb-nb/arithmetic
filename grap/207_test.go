@@ -11,6 +11,40 @@ https://leetcode.cn/problems/course-schedule/
 review
 */
 func CanFinish(numCourses int, prerequisites [][]int) bool {
+	vaild := true
+	stack := []int{}
+	edges := make([][]int, numCourses)
+	for _, v := range prerequisites {
+		edges[v[1]] = append(edges[v[1]], v[0])
+	}
+	tmp := make([]int, numCourses)
+
+	var dfs func(i int)
+	dfs = func(i int) {
+		//表示正在搜索
+		tmp[i] = 1
+		for _, v := range edges[i] {
+			if tmp[v] == 0 {
+				dfs(v)
+				if vaild == false {
+					return
+				}
+			} else if tmp[v] == 1 {
+				vaild = false
+				return
+			}
+		}
+		tmp[i] = 2 //搜索完毕
+		stack = append(stack, i)
+	}
+	for k, v := range tmp {
+		if v == 0 {
+			dfs(k)
+		}
+		if !vaild {
+			return false
+		}
+	}
 	return true
 }
 

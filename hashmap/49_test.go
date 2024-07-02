@@ -1,8 +1,11 @@
 package hashmap
 
-import "testing"
+import (
+	"testing"
+)
 
 /*
+https://leetcode.cn/problems/group-anagrams/
 给你一个字符串数组，请你将 字母异位词 组合在一起。
 可以按任意顺序返回结果列表。
 
@@ -11,14 +14,17 @@ import "testing"
 输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
 */
 func GroupAnagrams(strs []string) [][]string {
+	/*
+		1.用一个map存放键为索引，值为单词
+	*/
 	res := [][]string{}
-	hmap := map[[26]int][]string{}
+	hmap := make(map[[26]int][]string)
 	for _, str := range strs {
-		chars := [26]int{}
-		for _, ch := range str {
-			chars[ch-'a']++
+		tmp := [26]int{}
+		for i := 0; i < len(str); i++ {
+			tmp[str[i]-'a']++
 		}
-		hmap[chars] = append(hmap[chars], str)
+		hmap[tmp] = append(hmap[tmp], str)
 	}
 	for _, v := range hmap {
 		res = append(res, v)
@@ -43,5 +49,6 @@ func groupAnagrams(strs []string) [][]string {
 	return res
 }
 func TestGroupanagrams(t *testing.T) {
-	t.Log(GroupAnagrams([]string{"eat", "tea", "tan", "ate", "nat", "bat"}))
+	res := GroupAnagrams([]string{"eat", "tea", "tan", "ate", "nat", "bat"})
+	t.Log(res)
 }

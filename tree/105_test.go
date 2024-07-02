@@ -1,6 +1,9 @@
 package tree
 
+import "testing"
+
 /*
+https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 数组元素不重复
 还原树结构
 
@@ -10,20 +13,24 @@ package tree
 输出: [3,9,20,null,null,15,7]
 */
 func BuildTree(preorder []int, inorder []int) *TreeNode {
+	/*
+		1. 中序遍历的第一个一定是根节点
+		2. 根据根节点去找左右树的分界，当前函数只负责构建自己的节点
+	*/
 	if len(preorder) == 0 {
 		return nil
 	}
-	node := &TreeNode{Val: preorder[0]}
+	root := &TreeNode{Val: preorder[0]}
 	i := 0
-	for ; i < len(inorder); i++ {
-		if preorder[0] == inorder[i] {
+	for k, v := range inorder {
+		if v == preorder[0] {
+			i = k
 			break
 		}
 	}
-
-	node.Left = BuildTree(preorder[1:len(inorder[:i])+1], inorder[:i])
-	node.Right = BuildTree(preorder[len(inorder[:i])+1:], inorder[i+1:])
-	return node
+	root.Left = BuildTree(preorder[1:1+i], inorder[:i])
+	root.Right = BuildTree(preorder[1+i:], inorder[i+1:])
+	return root
 }
 
 /*
@@ -45,4 +52,10 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 	root.Left = buildTree(preorder[1:len(inorder[:i])+1], inorder[:i])
 	root.Right = buildTree(preorder[len(inorder[:i])+1:], inorder[i+1:])
 	return root
+}
+
+func TestBuildTree(t *testing.T) {
+	root := BuildTree([]int{3, 9, 20, 15, 7}, []int{9, 3, 15, 20, 7})
+	t.Log(inorderTraversal(root))
+	t.Log(inorderTraversal(BuildTree([]int{-1}, []int{-1})))
 }
